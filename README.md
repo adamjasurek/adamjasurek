@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./banner.svg" alt="Adam Jašúrek — Freelance web developer from Czechia" width="100%">
+  <img src="./banner.svg" alt="Adam Jašúrek — Freelance web developer" width="100%">
 </div>
 
 <br>

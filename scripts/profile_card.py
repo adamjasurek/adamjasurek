@@ -30,8 +30,10 @@ would overstate "commits". If a window reports a non-zero restricted
 count (the token could not see a private breakdown), those hidden
 contributions are omitted from the total and a warning is printed.
 
-The SVG never lists repository names — only aggregate counts and the
-contribution calendar heatmap.
+The SVG never lists repository names — only aggregate counts
+(years on GitHub, repos, and commits). The contribution calendar is
+left to GitHub's native profile graph, so this card does not fetch or
+draw one.
 """
 
 from __future__ import annotations
@@ -42,7 +44,7 @@ import os
 import sys
 import urllib.error
 import urllib.request
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from xml.sax.saxutils import escape
@@ -61,47 +63,19 @@ YELLOW = "#FFD60A"
 LIME = "#C6FF4D"
 PINK = "#FF4D8D"
 
-# Official GitHub contribution greens, plus card/panel chrome per theme.
+# Card chrome per theme. Shadows match the page: light grey on light,
+# near-black on dark. Inner block shadows use the same color.
 THEMES = {
     "light": {
         "card_fill": "#FFF8EB",
         "card_stroke": "#111111",
         "card_shadow": "#d0d7de",
-        "panel_fill": "#ffffff",
-        "panel_stroke": "#111111",
-        "panel_shadow": "#d0d7de",
-        "graph_label": "#57606a",
-        "levels": {
-            0: "#ebedf0",
-            1: "#9be9a8",
-            2: "#40c463",
-            3: "#30a14e",
-            4: "#216e39",
-        },
     },
     "dark": {
         "card_fill": "#0d1117",
         "card_stroke": "#e6edf3",
         "card_shadow": "#000000",
-        "panel_fill": "#0d1117",
-        "panel_stroke": "#30363d",
-        "panel_shadow": "#000000",
-        "graph_label": "#7d8590",
-        "levels": {
-            0: "#161b22",
-            1: "#0e4429",
-            2: "#006d32",
-            3: "#26a641",
-            4: "#39d353",
-        },
     },
-}
-LEVEL_FROM_NAME = {
-    "NONE": 0,
-    "FIRST_QUARTILE": 1,
-    "SECOND_QUARTILE": 2,
-    "THIRD_QUARTILE": 3,
-    "FOURTH_QUARTILE": 4,
 }
 
 FONT = "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
@@ -205,18 +179,6 @@ def fetch_profile(token: str, login: str, now: datetime) -> dict[str, Any]:
           user(login: $login) {
             createdAt
             repositories(ownerAffiliations: OWNER) { totalCount }
-            contributionsCollection {
-              contributionCalendar {
-                weeks {
-                  contributionDays {
-                    date
-                    contributionCount
-                    contributionLevel
-                    weekday
-                  }
-                }
-              }
-            }
           }
         }
         """,
@@ -258,84 +220,12 @@ def fetch_profile(token: str, login: str, now: datetime) -> dict[str, Any]:
             }
         )
 
-    calendar = []
-    for week in user["contributionsCollection"]["contributionCalendar"]["weeks"]:
-        for day in week["contributionDays"]:
-            level = LEVEL_FROM_NAME.get(str(day.get("contributionLevel") or ""), None)
-            calendar.append(
-                {
-                    "date": day["date"],
-                    "count": int(day["contributionCount"] or 0),
-                    "level": level,
-                    "weekday": day.get("weekday"),
-                }
-            )
-    counts = [d["count"] for d in calendar]
-    for day in calendar:
-        if day["level"] is None:
-            day["level"] = level_from_count(day["count"], counts)
-
     return {
         "login": login,
         "createdAt": user["createdAt"],
         "repositoryCount": int(user["repositories"]["totalCount"]),
         "commitYears": commit_years,
-        "calendar": calendar,
     }
-
-
-def level_from_count(count: int, all_counts: list[int] | None = None) -> int:
-    if count <= 0:
-        return 0
-    nonzero = sorted(c for c in (all_counts or []) if c > 0)
-    if len(nonzero) >= 4:
-        def quartile(p: float) -> int:
-            idx = min(len(nonzero) - 1, max(0, int(round((p / 100) * (len(nonzero) - 1)))))
-            return nonzero[idx]
-        thresholds = [quartile(25), quartile(50), quartile(75)]
-        for i, threshold in enumerate(thresholds, start=1):
-            if count <= threshold:
-                return i
-        return 4
-    if count <= 2:
-        return 1
-    if count <= 5:
-        return 2
-    if count <= 9:
-        return 3
-    return 4
-
-
-def normalize_calendar(days: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Deduplicate by date, fill gaps, pad to a Sunday-Saturday grid."""
-    by_date: dict[date, dict[str, Any]] = {}
-    counts = [int(d.get("count") or 0) for d in days]
-    for item in days:
-        dt = date.fromisoformat(item["date"])
-        level = item.get("level")
-        if level is None:
-            level = level_from_count(int(item.get("count") or 0), counts)
-        by_date[dt] = {
-            "date": dt.isoformat(),
-            "count": int(item.get("count") or 0),
-            "level": int(level),
-        }
-    if not by_date:
-        return []
-    start = min(by_date)
-    end = max(by_date)
-    start = start - timedelta(days=(start.weekday() + 1) % 7)
-    end = end + timedelta(days=(5 - end.weekday()) % 7)
-    out = []
-    cur = start
-    one = timedelta(days=1)
-    while cur <= end:
-        if cur in by_date:
-            out.append(by_date[cur])
-        else:
-            out.append({"date": cur.isoformat(), "count": 0, "level": 0})
-        cur += one
-    return out
 
 
 # ---------------------------------------------------------------------------
@@ -357,16 +247,16 @@ def render_svg(profile: dict[str, Any], now: datetime, theme: str = "light") -> 
     if "commitTotal" in profile and not profile.get("commitYears"):
         commits = int(profile["commitTotal"])
     joined = years_ago_phrase(created, now)
-    calendar = normalize_calendar(profile.get("calendar") or [])
 
     if theme not in THEMES:
         raise ValueError(f"unknown theme: {theme!r}")
     pal = THEMES[theme]
-    level_colors = pal["levels"]
 
-    vw, vh = 1200, 476
+    # Name plate + three stat tiles; no contribution graph.
+    # Top/side padding matches the previous card (24px from the card edge).
+    vw, vh = 1200, 262
     card_x, card_y = 12, 12
-    card_w, card_h = 1156, 440
+    card_w, card_h = 1156, 222
     shadow = 16
 
     plate_x, plate_y = 40, 36
@@ -386,42 +276,6 @@ def render_svg(profile: dict[str, Any], now: datetime, theme: str = "light") -> 
     tiles_w = 1100
     tile_w = (tiles_w - 2 * tile_gap) / 3
 
-    # Dark graph panel, aligned with the tiles above
-    panel_x, panel_w = 40.0, 1100.0
-    panel_y = 222.0
-    cal_plot_x = panel_x + 40
-    cal_plot_y = panel_y + 28
-    weeks_n = max(1, len(calendar) // 7)
-    plot_right = panel_x + panel_w - 20
-    plot_w = plot_right - cal_plot_x
-    pitch = plot_w / weeks_n
-    gap = 3.0
-    cell = pitch - gap
-    if cell < 10:
-        cell = 10.0
-        gap = max(1.5, pitch - cell)
-    cal_h = 7 * pitch - gap
-    legend_y = cal_plot_y + cal_h + 22
-    panel_h = (legend_y + 16) - panel_y
-
-    weeks: list[list[dict[str, Any]]] = [
-        calendar[i:i + 7] for i in range(0, len(calendar), 7)
-    ]
-
-    month_labels: list[tuple[float, str]] = []
-    last_m = None
-    last_x = -999.0
-    for wi, week in enumerate(weeks):
-        for day in week:
-            dt = date.fromisoformat(day["date"])
-            if last_m is None or dt.month != last_m:
-                x = cal_plot_x + wi * pitch
-                if last_m is None or x - last_x >= 32:
-                    month_labels.append((x, dt.strftime("%b")))
-                    last_x = x
-                last_m = dt.month
-                break
-
     tiles = [
         (LIME, "Joined GitHub", joined.replace("Joined GitHub ", "")),
         (YELLOW, "repos", format_int(repos)),
@@ -436,8 +290,7 @@ def render_svg(profile: dict[str, Any], now: datetime, theme: str = "light") -> 
     )
     title = "Adam Jašúrek on GitHub"
     desc = (
-        f"{joined}. {format_int(repos)} repos. {format_int(commits)} commits. "
-        "Contribution graph for the last 12 months."
+        f"{joined}. {format_int(repos)} repos. {format_int(commits)} commits."
     )
     parts.append(f'  <title id="title">{escape(title)}</title>')
     parts.append(f'  <desc id="desc">{escape(desc)}</desc>')
@@ -494,54 +347,6 @@ def render_svg(profile: dict[str, Any], now: datetime, theme: str = "light") -> 
                 f'font-size="13" font-weight="600" fill="{INK}">{escape(caption)}</text>'
             )
 
-    parts.append(
-        f'  <rect x="{panel_x + 5:.2f}" y="{panel_y + 5:.2f}" width="{panel_w:.2f}" '
-        f'height="{panel_h:.2f}" fill="{pal["panel_shadow"]}"/>'
-    )
-    parts.append(
-        f'  <rect x="{panel_x:.2f}" y="{panel_y:.2f}" width="{panel_w:.2f}" '
-        f'height="{panel_h:.2f}" fill="{pal["panel_fill"]}" stroke="{pal["panel_stroke"]}" stroke-width="4"/>'
-    )
-
-    for x, lab in month_labels:
-        parts.append(
-            f'  <text x="{x:.2f}" y="{cal_plot_y - 10}" font-family="{FONT}" '
-            f'font-size="12" font-weight="600" fill="{pal['graph_label']}">{lab}</text>'
-        )
-    for di, lab in ((1, "Mon"), (3, "Wed"), (5, "Fri")):
-        y = cal_plot_y + di * pitch + cell * 0.8
-        parts.append(
-            f'  <text x="{cal_plot_x - 10}" y="{y:.2f}" text-anchor="end" '
-            f'font-family="{FONT}" font-size="11" font-weight="600" fill="{pal['graph_label']}">{lab}</text>'
-        )
-
-    today = now.date()
-    for wi, week in enumerate(weeks):
-        for di, day in enumerate(week):
-            x = cal_plot_x + wi * pitch
-            y = cal_plot_y + di * pitch
-            fill = level_colors.get(int(day["level"]), level_colors[0])
-            if date.fromisoformat(day["date"]) > today:
-                fill = level_colors[0]
-            parts.append(
-                f'  <rect x="{x:.2f}" y="{y:.2f}" width="{cell:.2f}" height="{cell:.2f}" rx="2" ry="2" fill="{fill}"/>'
-            )
-
-    lx = cal_plot_x
-    sw, sg = 12, 4
-    parts.append(
-        f'  <text x="{lx}" y="{legend_y:.2f}" font-family="{FONT}" font-size="11" '
-        f'font-weight="600" fill="{pal['graph_label']}">Less</text>'
-    )
-    for i in range(5):
-        parts.append(
-            f'  <rect x="{lx + 36 + i * (sw + sg):.2f}" y="{legend_y - 11:.2f}" '
-            f'width="{sw}" height="{sw}" rx="2" ry="2" fill="{level_colors[i]}"/>'
-        )
-    parts.append(
-        f'  <text x="{lx + 36 + 5 * (sw + sg) + 4:.2f}" y="{legend_y:.2f}" '
-        f'font-family="{FONT}" font-size="11" font-weight="600" fill="{pal['graph_label']}">More</text>'
-    )
     parts.append("</svg>")
     _ = restricted  # reserved for callers via build(); kept out of the SVG
     return "\n".join(parts) + "\n"
@@ -566,7 +371,6 @@ def build(profile: dict[str, Any], now: datetime | None = None, theme: str = "li
         "commits": commits,
         "restricted": restricted,
         "joined": years_ago_phrase(parse_iso(profile["createdAt"]), now),
-        "days": len(profile.get("calendar") or []),
     }
     return render_svg(profile, now, theme=theme), meta
 
@@ -606,6 +410,7 @@ def self_test() -> None:
     assert meta["commits"] == 2155
     assert meta["restricted"] == 0
     assert "2 years ago" in meta["joined"]
+    assert "days" not in meta
     for svg in (light, dark):
         assert "Adam Jašúrek" in svg
         assert "2,155" in svg
@@ -613,36 +418,33 @@ def self_test() -> None:
         assert ">30<" in svg or ">30</text>" in svg
         assert YELLOW in svg and LIME in svg and PINK in svg
         assert "<script" not in svg
+        assert 'viewBox="0 0 1200 262"' in svg
+        assert 'height="262"' in svg
+        # No contribution graph, legend, or leftover calendar copy
+        assert "Contribution graph" not in svg
+        assert ">Less<" not in svg and ">More<" not in svg
+        assert ">Mon<" not in svg and ">Wed<" not in svg and ">Fri<" not in svg
         for banned in ("rajwood", "arealmorkov", "dlabanec", "foodtrucky", "plzenskydvur"):
             assert banned.lower() not in svg.lower()
-    # Light card + official GitHub light greens
+        # Official GitHub contribution greens must not appear
+        for green in (
+            "#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39",
+            "#161b22", "#0e4429", "#006d32", "#26a641", "#39d353",
+        ):
+            assert green not in svg
+    # Theme chrome
     assert THEMES["light"]["card_fill"] in light
-    assert all(c in light for c in THEMES["light"]["levels"].values())
-    assert THEMES["light"]["levels"][0] == "#ebedf0"
-    assert THEMES["light"]["levels"][4] == "#216e39"
-    assert THEMES["dark"]["levels"][4] not in light  # #39d353 dark-bright green
-    # Dark card + official GitHub dark greens
     assert THEMES["dark"]["card_fill"] in dark
-    assert all(c in dark for c in THEMES["dark"]["levels"].values())
-    assert THEMES["dark"]["levels"][0] == "#161b22"
-    assert THEMES["dark"]["levels"][4] == "#39d353"
-    assert THEMES["light"]["levels"][0] not in dark  # #ebedf0
     # Shadows follow the theme: light grey on light, near-black on dark
     assert THEMES["light"]["card_shadow"] == "#d0d7de"
-    assert THEMES["light"]["panel_shadow"] == "#d0d7de"
     assert THEMES["dark"]["card_shadow"] == "#000000"
-    assert THEMES["dark"]["panel_shadow"] == "#000000"
     assert THEMES["light"]["card_shadow"] in light
     assert THEMES["dark"]["card_shadow"] in dark
     assert THEMES["dark"]["card_shadow"] not in light
     assert "#c9d1d9" not in dark  # previous inverted (light) shadow
-    # Count theme shadows: outer card + name plate + 3 tiles + graph panel
-    assert light.count(THEMES["light"]["card_shadow"]) >= 6
-    assert dark.count('fill="#000000"') >= 6
-    days = normalize_calendar(profile["calendar"])
-    assert len(days) % 7 == 0
-    assert date.fromisoformat(days[0]["date"]).weekday() == 6
-    assert date.fromisoformat(days[-1]["date"]).weekday() == 5
+    # Count theme shadows: outer card + name plate + 3 tiles
+    assert light.count(THEMES["light"]["card_shadow"]) == 5
+    assert dark.count('fill="#000000"') == 5
     print("self-test ok:", meta)
 
 

@@ -6,7 +6,7 @@
 
 <div align="center">
 
-Freelance web developer (OSVČ since 2025) from Czechia. I recently finished secondary school in IT (SŠINFOTECH) and I build client websites and web apps — from marketing sites to order systems and 3D configurators.
+Freelance web developer from Czechia building websites and web apps from marketing sites to order systems and 3D configurators.
 
 </div>
 
@@ -29,9 +29,9 @@ Freelance web developer (OSVČ since 2025) from Czechia. I recently finished sec
 
 ## Projects
 
-- **[Rajwood](https://www.rajwood.com/)** — one-page site for custom pergolas and timber structures. (soon)
+- **[Rajwood (soon)](https://www.rajwood.com/)** — one-page site for custom pergolas and timber structures.
 - **[Jídelna Dlabanec](https://www.jidelnadlabanec.cz)** — lunch delivery site, including an area for orders and payment matching.
-- **[Food-trailer configurator](https://foodtrucky.vercel.app)** — interactive 3D configurator for custom food trailers, built with Next.js and React Three Fiber. (soon)
+  - **[Food-trailer configurator soon)](https://foodtrucky.vercel.app)** — interactive 3D configurator for custom food trailers, built with Next.js and React Three Fiber.
 
 ## Contact
 

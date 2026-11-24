@@ -35,7 +35,7 @@ Freelance web developer from Czechia building websites and web apps from marketi
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./profile-card-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="./profile-card.svg">
-    <img src="./profile-card.svg" alt="Adam Jašúrek on GitHub — years active, repos, commits, and a contribution graph" width="100%">
+    <img src="./profile-card.svg" alt="Adam Jašúrek on GitHub — years active, repos, and commits" width="100%">
   </picture>
 </div>
 

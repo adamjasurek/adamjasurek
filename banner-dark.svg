@@ -28,7 +28,7 @@
   </style>
 
   <!-- Drop shadow of the main card -->
-  <rect class="shadow-nudge" x="28" y="28" width="1156" height="256" fill="#c9d1d9"/>
+  <rect class="shadow-nudge" x="28" y="28" width="1156" height="256" fill="#000000"/>
 
   <!-- Main card -->
   <rect x="12" y="12" width="1156" height="256" fill="#0d1117" stroke="#e6edf3" stroke-width="8"/>
@@ -41,7 +41,7 @@
   </g>
 
   <!-- Name highlighter -->
-  <rect x="114" y="64" width="960" height="116" fill="#111111"/>
+  <rect x="114" y="64" width="960" height="116" fill="#000000"/>
   <rect x="108" y="58" width="960" height="116" fill="#FFD60A" stroke="#111111" stroke-width="4"/>
   <g fill="#111111">
 <path fill="#111111" d="M124.38 156.70 145.60 93.34H165.76L186.88 156.70H170.08L155.87 105.92H155.30L140.99 156.70ZM136.38 145.47V134.53H176.80V145.47Z"/>
@@ -58,7 +58,7 @@
   </g>
 
   <!-- Tagline bar -->
-  <rect x="113" y="191" width="960" height="54" fill="#111111"/>
+  <rect x="113" y="191" width="960" height="54" fill="#000000"/>
   <rect x="108" y="186" width="960" height="54" fill="#C6FF4D" stroke="#111111" stroke-width="4"/>
   <g fill="#111111">
 <path fill="#111111" d="M131.53 220.04V204.64H141.12V207.04H134.17V211.12H140.57V213.52H134.17V220.04Z"/>

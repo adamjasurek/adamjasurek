@@ -2,9 +2,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="476" viewBox="0 0 1200 476" role="img" aria-labelledby="title desc">
   <title id="title">Adam Jašúrek on GitHub</title>
   <desc id="desc">Joined GitHub 2 years ago. 30 repos. 2,155 commits. Contribution graph for the last 12 months.</desc>
-  <rect x="28" y="28" width="1156" height="440" fill="#111111"/>
+  <rect x="28" y="28" width="1156" height="440" fill="#d0d7de"/>
   <rect x="12" y="12" width="1156" height="440" fill="#FFF8EB" stroke="#111111" stroke-width="8"/>
-  <rect x="46" y="42" width="1100" height="78" fill="#111111"/>
+  <rect x="46" y="42" width="1100" height="78" fill="#d0d7de"/>
   <rect x="40" y="36" width="1100" height="78" fill="#FFD60A" stroke="#111111" stroke-width="4"/>
   <g transform="translate(62.00, 95.10)">
 <path fill="#111111" d="M0.22 0.00 12.60 -36.96H24.36L36.68 0.00H26.88L18.59 -29.62H18.26L9.91 0.00ZM7.22 -6.55V-12.94H30.80V-6.55Z"/>
@@ -19,22 +19,22 @@
 <path fill="#111111" d="M306.21 0.78Q302.01 0.78 299.18 -0.42Q296.35 -1.62 294.62 -3.72Q292.88 -5.82 292.12 -8.51Q291.37 -11.20 291.37 -14.17Q291.37 -17.36 292.18 -20.27Q292.99 -23.18 294.70 -25.45Q296.41 -27.72 299.12 -29.04Q301.84 -30.35 305.65 -30.35Q309.46 -30.35 312.17 -29.04Q314.89 -27.72 316.51 -25.37Q318.14 -23.02 318.61 -19.94Q319.09 -16.86 318.47 -13.27L297.02 -12.94V-17.86L311.53 -18.14L310.35 -15.29Q310.69 -17.86 310.27 -19.63Q309.85 -21.39 308.73 -22.32Q307.61 -23.24 305.65 -23.24Q303.58 -23.24 302.34 -22.18Q301.11 -21.11 300.61 -19.18Q300.10 -17.25 300.10 -14.62Q300.10 -10.08 301.62 -8.01Q303.13 -5.94 306.26 -5.94Q307.61 -5.94 308.50 -6.27Q309.40 -6.61 309.96 -7.25Q310.52 -7.90 310.74 -8.82Q310.97 -9.74 310.91 -10.92L319.20 -10.47Q319.37 -8.62 318.84 -6.66Q318.30 -4.70 316.85 -3.02Q315.39 -1.34 312.79 -0.28Q310.18 0.78 306.21 0.78Z"/>
 <path fill="#111111" d="M322.22 0.00V-39.20H331.07V-18.42Q332.98 -19.43 334.35 -20.72Q335.72 -22.01 336.67 -23.49Q337.62 -24.98 338.21 -26.52Q338.80 -28.06 339.19 -29.57H349.61Q348.99 -27.33 347.84 -25.23Q346.70 -23.13 345.02 -21.31Q343.34 -19.49 341.12 -18.03Q338.91 -16.58 336.22 -15.62V-15.18Q339.70 -15.74 341.91 -15.32Q344.12 -14.90 345.41 -13.75Q346.70 -12.60 347.40 -10.86Q348.10 -9.13 348.49 -7.00L349.78 0.00H339.98L339.36 -4.93Q339.14 -6.72 338.74 -8.29Q338.35 -9.86 337.23 -10.84Q336.11 -11.82 333.70 -11.82H331.07V0.00Z"/>
   </g>
-  <rect x="45.00" y="137" width="356.00" height="78" fill="#111111"/>
+  <rect x="45.00" y="137" width="356.00" height="78" fill="#d0d7de"/>
   <rect x="40.00" y="132" width="356.00" height="78" fill="#FFF8EB" stroke="#111111" stroke-width="4"/>
   <rect x="40.00" y="132" width="356.00" height="10" fill="#C6FF4D" stroke="#111111" stroke-width="4"/>
   <text x="58.00" y="162" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#111111">Joined GitHub</text>
   <text x="58.00" y="190" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" font-weight="800" fill="#111111">2 years ago</text>
-  <rect x="417.00" y="137" width="356.00" height="78" fill="#111111"/>
+  <rect x="417.00" y="137" width="356.00" height="78" fill="#d0d7de"/>
   <rect x="412.00" y="132" width="356.00" height="78" fill="#FFF8EB" stroke="#111111" stroke-width="4"/>
   <rect x="412.00" y="132" width="356.00" height="10" fill="#FFD60A" stroke="#111111" stroke-width="4"/>
   <text x="430.00" y="174" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="32" font-weight="800" fill="#111111">30</text>
   <text x="430.00" y="196" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#111111">repos</text>
-  <rect x="789.00" y="137" width="356.00" height="78" fill="#111111"/>
+  <rect x="789.00" y="137" width="356.00" height="78" fill="#d0d7de"/>
   <rect x="784.00" y="132" width="356.00" height="78" fill="#FFF8EB" stroke="#111111" stroke-width="4"/>
   <rect x="784.00" y="132" width="356.00" height="10" fill="#FF4D8D" stroke="#111111" stroke-width="4"/>
   <text x="802.00" y="174" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="32" font-weight="800" fill="#111111">2,155</text>
   <text x="802.00" y="196" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#111111">commits</text>
-  <rect x="45.00" y="227.00" width="1100.00" height="200.36" fill="#111111"/>
+  <rect x="45.00" y="227.00" width="1100.00" height="200.36" fill="#d0d7de"/>
   <rect x="40.00" y="222.00" width="1100.00" height="200.36" fill="#ffffff" stroke="#111111" stroke-width="4"/>
   <text x="80.00" y="240.0" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#57606a">Nov</text>
   <text x="178.11" y="240.0" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#57606a">Jan</text>

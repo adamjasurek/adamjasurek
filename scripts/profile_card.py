@@ -60,12 +60,15 @@ INK = "#111111"
 YELLOW = "#FFD60A"
 LIME = "#C6FF4D"
 PINK = "#FF4D8D"
+# Official GitHub dark-theme contribution graph
+GRAPH_BG = "#0d1117"
+GRAPH_LABEL = "#7d8590"
 LEVEL_COLORS = {
-    0: "#EFE6D2",
-    1: "#FFE58A",
-    2: "#FFD60A",
-    3: "#C6FF4D",
-    4: "#111111",
+    0: "#161b22",
+    1: "#0e4429",
+    2: "#006d32",
+    3: "#26a641",
+    4: "#39d353",
 }
 LEVEL_FROM_NAME = {
     "NONE": 0,
@@ -330,9 +333,9 @@ def render_svg(profile: dict[str, Any], now: datetime) -> str:
     joined = years_ago_phrase(created, now)
     calendar = normalize_calendar(profile.get("calendar") or [])
 
-    vw, vh = 1200, 468
+    vw, vh = 1200, 476
     card_x, card_y = 12, 12
-    card_w, card_h = 1156, 432
+    card_w, card_h = 1156, 440
     shadow = 16
 
     plate_x, plate_y = 40, 36
@@ -352,10 +355,13 @@ def render_svg(profile: dict[str, Any], now: datetime) -> str:
     tiles_w = 1100
     tile_w = (tiles_w - 2 * tile_gap) / 3
 
-    cal_plot_x = 80
-    cal_plot_y = 246
+    # Dark graph panel, aligned with the tiles above
+    panel_x, panel_w = 40.0, 1100.0
+    panel_y = 222.0
+    cal_plot_x = panel_x + 40
+    cal_plot_y = panel_y + 28
     weeks_n = max(1, len(calendar) // 7)
-    plot_right = 1140
+    plot_right = panel_x + panel_w - 20
     plot_w = plot_right - cal_plot_x
     pitch = plot_w / weeks_n
     gap = 3.0
@@ -365,6 +371,7 @@ def render_svg(profile: dict[str, Any], now: datetime) -> str:
         gap = max(1.5, pitch - cell)
     cal_h = 7 * pitch - gap
     legend_y = cal_plot_y + cal_h + 22
+    panel_h = (legend_y + 16) - panel_y
 
     weeks: list[list[dict[str, Any]]] = [
         calendar[i:i + 7] for i in range(0, len(calendar), 7)
@@ -456,16 +463,25 @@ def render_svg(profile: dict[str, Any], now: datetime) -> str:
                 f'font-size="13" font-weight="600" fill="{INK}">{escape(caption)}</text>'
             )
 
+    parts.append(
+        f'  <rect x="{panel_x + 5:.2f}" y="{panel_y + 5:.2f}" width="{panel_w:.2f}" '
+        f'height="{panel_h:.2f}" fill="{INK}"/>'
+    )
+    parts.append(
+        f'  <rect x="{panel_x:.2f}" y="{panel_y:.2f}" width="{panel_w:.2f}" '
+        f'height="{panel_h:.2f}" fill="{GRAPH_BG}" stroke="{INK}" stroke-width="4"/>'
+    )
+
     for x, lab in month_labels:
         parts.append(
             f'  <text x="{x:.2f}" y="{cal_plot_y - 10}" font-family="{FONT}" '
-            f'font-size="12" font-weight="600" fill="{INK}">{lab}</text>'
+            f'font-size="12" font-weight="600" fill="{GRAPH_LABEL}">{lab}</text>'
         )
     for di, lab in ((1, "Mon"), (3, "Wed"), (5, "Fri")):
         y = cal_plot_y + di * pitch + cell * 0.8
         parts.append(
             f'  <text x="{cal_plot_x - 10}" y="{y:.2f}" text-anchor="end" '
-            f'font-family="{FONT}" font-size="11" font-weight="600" fill="{INK}">{lab}</text>'
+            f'font-family="{FONT}" font-size="11" font-weight="600" fill="{GRAPH_LABEL}">{lab}</text>'
         )
 
     today = now.date()
@@ -477,23 +493,23 @@ def render_svg(profile: dict[str, Any], now: datetime) -> str:
             if date.fromisoformat(day["date"]) > today:
                 fill = LEVEL_COLORS[0]
             parts.append(
-                f'  <rect x="{x:.2f}" y="{y:.2f}" width="{cell:.2f}" height="{cell:.2f}" fill="{fill}"/>'
+                f'  <rect x="{x:.2f}" y="{y:.2f}" width="{cell:.2f}" height="{cell:.2f}" rx="2" ry="2" fill="{fill}"/>'
             )
 
     lx = cal_plot_x
     sw, sg = 12, 4
     parts.append(
         f'  <text x="{lx}" y="{legend_y:.2f}" font-family="{FONT}" font-size="11" '
-        f'font-weight="600" fill="{INK}">Less</text>'
+        f'font-weight="600" fill="{GRAPH_LABEL}">Less</text>'
     )
     for i in range(5):
         parts.append(
             f'  <rect x="{lx + 36 + i * (sw + sg):.2f}" y="{legend_y - 11:.2f}" '
-            f'width="{sw}" height="{sw}" fill="{LEVEL_COLORS[i]}" stroke="{INK}" stroke-width="1"/>'
+            f'width="{sw}" height="{sw}" rx="2" ry="2" fill="{LEVEL_COLORS[i]}"/>'
         )
     parts.append(
         f'  <text x="{lx + 36 + 5 * (sw + sg) + 4:.2f}" y="{legend_y:.2f}" '
-        f'font-family="{FONT}" font-size="11" font-weight="600" fill="{INK}">More</text>'
+        f'font-family="{FONT}" font-size="11" font-weight="600" fill="{GRAPH_LABEL}">More</text>'
     )
     parts.append("</svg>")
     _ = restricted  # reserved for callers via build(); kept out of the SVG
@@ -562,7 +578,11 @@ def self_test() -> None:
     assert "2 years ago" in svg
     assert ">30<" in svg or ">30</text>" in svg
     assert YELLOW in svg and LIME in svg and PINK in svg
-    assert LEVEL_COLORS[0] in svg and LEVEL_COLORS[4] in svg
+    assert GRAPH_BG in svg
+    assert LEVEL_COLORS[0] == "#161b22"
+    assert LEVEL_COLORS[4] == "#39d353"
+    assert all(c in svg for c in LEVEL_COLORS.values())
+    assert GRAPH_LABEL in svg
     for banned in ("rajwood", "arealmorkov", "dlabanec", "foodtrucky", "plzenskydvur"):
         assert banned.lower() not in svg.lower()
     assert "<script" not in svg

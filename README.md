@@ -18,8 +18,8 @@ Freelance web developer from Czechia building websites and web apps from marketi
 
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://skillicons.dev/icons?i=react,nextjs,ts,tailwind,threejs,nodejs,python,vercel&theme=dark">
-    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=react,nextjs,ts,tailwind,threejs,nodejs,python,vercel&theme=light">
+    <source media="(prefers-color-scheme: dark)" srcset="https://skillicons.dev/icons?i=react%2Cnextjs%2Cts%2Ctailwind%2Cthreejs%2Cnodejs%2Cpython%2Cvercel&theme=dark">
+    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=react%2Cnextjs%2Cts%2Ctailwind%2Cthreejs%2Cnodejs%2Cpython%2Cvercel&theme=light">
     <img src="https://skillicons.dev/icons?i=react,nextjs,ts,tailwind,threejs,nodejs,python,vercel" alt="React, Next.js, TypeScript, Tailwind CSS, Three.js, Node.js, Python, and Vercel">
   </picture>
   <br><br>

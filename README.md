@@ -31,7 +31,7 @@ Freelance web developer from Czechia building websites and web apps from marketi
 
 - **[Rajwood (soon)](https://www.rajwood.com/)** — one-page site for custom pergolas and timber structures.
 - **[Jídelna Dlabanec](https://www.jidelnadlabanec.cz)** — lunch delivery site, including an area for orders and payment matching.
-- **[Food-trailer configurator soon)](https://foodtrucky.vercel.app)** — interactive 3D configurator for custom food trailers, built with Next.js and React Three Fiber.
+- **[Food-trailer configurator (soon)](https://foodtrucky.vercel.app)** — interactive 3D configurator for custom food trailers, built with Next.js and React Three Fiber.
 
 ## Contact
 

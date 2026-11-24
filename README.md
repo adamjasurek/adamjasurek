@@ -1,5 +1,9 @@
 <div align="center">
-  <img src="./banner.svg" alt="Adam Jašúrek — Freelance web developer" width="100%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./banner-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./banner.svg">
+    <img src="./banner.svg" alt="Adam Jašúrek — Freelance web developer" width="100%">
+  </picture>
 </div>
 
 <br>
@@ -13,7 +17,11 @@ Freelance web developer from Czechia building websites and web apps from marketi
 ## Tech stack
 
 <div align="center">
-  <img src="https://skillicons.dev/icons?i=react,nextjs,ts,tailwind,threejs,nodejs,python,vercel" alt="React, Next.js, TypeScript, Tailwind CSS, Three.js, Node.js, Python, and Vercel">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://skillicons.dev/icons?i=react,nextjs,ts,tailwind,threejs,nodejs,python,vercel&theme=dark">
+    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=react,nextjs,ts,tailwind,threejs,nodejs,python,vercel&theme=light">
+    <img src="https://skillicons.dev/icons?i=react,nextjs,ts,tailwind,threejs,nodejs,python,vercel" alt="React, Next.js, TypeScript, Tailwind CSS, Three.js, Node.js, Python, and Vercel">
+  </picture>
   <br><br>
   <img src="https://img.shields.io/badge/n8n-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n">
   <img src="https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=black" alt="GSAP">
@@ -24,7 +32,11 @@ Freelance web developer from Czechia building websites and web apps from marketi
 ## GitHub activity
 
 <div align="center">
-  <img src="./profile-card.svg" alt="Adam Jašúrek on GitHub — years active, repos, commits, and a contribution graph" width="100%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./profile-card-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./profile-card.svg">
+    <img src="./profile-card.svg" alt="Adam Jašúrek on GitHub — years active, repos, commits, and a contribution graph" width="100%">
+  </picture>
 </div>
 
 ## Projects

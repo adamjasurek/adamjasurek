@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate a neo-brutalist GitHub profile card (profile-card.svg).
+"""Generate neo-brutalist GitHub profile cards (profile-card.svg and profile-card-dark.svg).
 
 Dependency-free: Python 3 standard library only. Designed to run in
 GitHub Actions (ubuntu-latest) or locally.
@@ -54,21 +54,47 @@ ROOT = SCRIPT_DIR.parent
 DEFAULT_OUT = ROOT / "profile-card.svg"
 NAME_PATHS_FILE = SCRIPT_DIR / "name_paths.json"
 
-# Palette (matches the profile banner)
+# Palette (matches the profile banner) — used for name plate and stat tiles
 PAPER = "#FFF8EB"
 INK = "#111111"
 YELLOW = "#FFD60A"
 LIME = "#C6FF4D"
 PINK = "#FF4D8D"
-# Official GitHub dark-theme contribution graph
-GRAPH_BG = "#0d1117"
-GRAPH_LABEL = "#7d8590"
-LEVEL_COLORS = {
-    0: "#161b22",
-    1: "#0e4429",
-    2: "#006d32",
-    3: "#26a641",
-    4: "#39d353",
+
+# Official GitHub contribution greens, plus card/panel chrome per theme.
+THEMES = {
+    "light": {
+        "card_fill": "#FFF8EB",
+        "card_stroke": "#111111",
+        "card_shadow": "#111111",
+        "panel_fill": "#ffffff",
+        "panel_stroke": "#111111",
+        "panel_shadow": "#111111",
+        "graph_label": "#57606a",
+        "levels": {
+            0: "#ebedf0",
+            1: "#9be9a8",
+            2: "#40c463",
+            3: "#30a14e",
+            4: "#216e39",
+        },
+    },
+    "dark": {
+        "card_fill": "#0d1117",
+        "card_stroke": "#e6edf3",
+        "card_shadow": "#c9d1d9",
+        "panel_fill": "#0d1117",
+        "panel_stroke": "#30363d",
+        "panel_shadow": "#010409",
+        "graph_label": "#7d8590",
+        "levels": {
+            0: "#161b22",
+            1: "#0e4429",
+            2: "#006d32",
+            3: "#26a641",
+            4: "#39d353",
+        },
+    },
 }
 LEVEL_FROM_NAME = {
     "NONE": 0,
@@ -320,7 +346,7 @@ def path_els(paths: list[str], fill: str = INK) -> str:
     return "\n".join(f'<path fill="{fill}" d="{d}"/>' for d in paths)
 
 
-def render_svg(profile: dict[str, Any], now: datetime) -> str:
+def render_svg(profile: dict[str, Any], now: datetime, theme: str = "light") -> str:
     name = load_name_paths()
     name_paths = name["paths"]
     name_bbox = name["bbox"]
@@ -332,6 +358,11 @@ def render_svg(profile: dict[str, Any], now: datetime) -> str:
         commits = int(profile["commitTotal"])
     joined = years_ago_phrase(created, now)
     calendar = normalize_calendar(profile.get("calendar") or [])
+
+    if theme not in THEMES:
+        raise ValueError(f"unknown theme: {theme!r}")
+    pal = THEMES[theme]
+    level_colors = pal["levels"]
 
     vw, vh = 1200, 476
     card_x, card_y = 12, 12
@@ -412,11 +443,11 @@ def render_svg(profile: dict[str, Any], now: datetime) -> str:
     parts.append(f'  <desc id="desc">{escape(desc)}</desc>')
     parts.append(
         f'  <rect x="{card_x + shadow}" y="{card_y + shadow}" '
-        f'width="{card_w}" height="{card_h}" fill="{INK}"/>'
+        f'width="{card_w}" height="{card_h}" fill="{pal["card_shadow"]}"/>'
     )
     parts.append(
         f'  <rect x="{card_x}" y="{card_y}" width="{card_w}" height="{card_h}" '
-        f'fill="{PAPER}" stroke="{INK}" stroke-width="8"/>'
+        f'fill="{pal["card_fill"]}" stroke="{pal["card_stroke"]}" stroke-width="8"/>'
     )
     parts.append(
         f'  <rect x="{plate_x + 6}" y="{plate_y + 6}" width="{plate_w}" '
@@ -465,23 +496,23 @@ def render_svg(profile: dict[str, Any], now: datetime) -> str:
 
     parts.append(
         f'  <rect x="{panel_x + 5:.2f}" y="{panel_y + 5:.2f}" width="{panel_w:.2f}" '
-        f'height="{panel_h:.2f}" fill="{INK}"/>'
+        f'height="{panel_h:.2f}" fill="{pal["panel_shadow"]}"/>'
     )
     parts.append(
         f'  <rect x="{panel_x:.2f}" y="{panel_y:.2f}" width="{panel_w:.2f}" '
-        f'height="{panel_h:.2f}" fill="{GRAPH_BG}" stroke="{INK}" stroke-width="4"/>'
+        f'height="{panel_h:.2f}" fill="{pal["panel_fill"]}" stroke="{pal["panel_stroke"]}" stroke-width="4"/>'
     )
 
     for x, lab in month_labels:
         parts.append(
             f'  <text x="{x:.2f}" y="{cal_plot_y - 10}" font-family="{FONT}" '
-            f'font-size="12" font-weight="600" fill="{GRAPH_LABEL}">{lab}</text>'
+            f'font-size="12" font-weight="600" fill="{pal['graph_label']}">{lab}</text>'
         )
     for di, lab in ((1, "Mon"), (3, "Wed"), (5, "Fri")):
         y = cal_plot_y + di * pitch + cell * 0.8
         parts.append(
             f'  <text x="{cal_plot_x - 10}" y="{y:.2f}" text-anchor="end" '
-            f'font-family="{FONT}" font-size="11" font-weight="600" fill="{GRAPH_LABEL}">{lab}</text>'
+            f'font-family="{FONT}" font-size="11" font-weight="600" fill="{pal['graph_label']}">{lab}</text>'
         )
 
     today = now.date()
@@ -489,9 +520,9 @@ def render_svg(profile: dict[str, Any], now: datetime) -> str:
         for di, day in enumerate(week):
             x = cal_plot_x + wi * pitch
             y = cal_plot_y + di * pitch
-            fill = LEVEL_COLORS.get(int(day["level"]), LEVEL_COLORS[0])
+            fill = level_colors.get(int(day["level"]), level_colors[0])
             if date.fromisoformat(day["date"]) > today:
-                fill = LEVEL_COLORS[0]
+                fill = level_colors[0]
             parts.append(
                 f'  <rect x="{x:.2f}" y="{y:.2f}" width="{cell:.2f}" height="{cell:.2f}" rx="2" ry="2" fill="{fill}"/>'
             )
@@ -500,16 +531,16 @@ def render_svg(profile: dict[str, Any], now: datetime) -> str:
     sw, sg = 12, 4
     parts.append(
         f'  <text x="{lx}" y="{legend_y:.2f}" font-family="{FONT}" font-size="11" '
-        f'font-weight="600" fill="{GRAPH_LABEL}">Less</text>'
+        f'font-weight="600" fill="{pal['graph_label']}">Less</text>'
     )
     for i in range(5):
         parts.append(
             f'  <rect x="{lx + 36 + i * (sw + sg):.2f}" y="{legend_y - 11:.2f}" '
-            f'width="{sw}" height="{sw}" rx="2" ry="2" fill="{LEVEL_COLORS[i]}"/>'
+            f'width="{sw}" height="{sw}" rx="2" ry="2" fill="{level_colors[i]}"/>'
         )
     parts.append(
         f'  <text x="{lx + 36 + 5 * (sw + sg) + 4:.2f}" y="{legend_y:.2f}" '
-        f'font-family="{FONT}" font-size="11" font-weight="600" fill="{GRAPH_LABEL}">More</text>'
+        f'font-family="{FONT}" font-size="11" font-weight="600" fill="{pal['graph_label']}">More</text>'
     )
     parts.append("</svg>")
     _ = restricted  # reserved for callers via build(); kept out of the SVG
@@ -524,7 +555,7 @@ def load_mock(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def build(profile: dict[str, Any], now: datetime | None = None) -> tuple[str, dict[str, Any]]:
+def build(profile: dict[str, Any], now: datetime | None = None, theme: str = "light") -> tuple[str, dict[str, Any]]:
     now = now or datetime.now(timezone.utc)
     commits, restricted = sum_commits(profile.get("commitYears") or [])
     if "commitTotal" in profile and not profile.get("commitYears"):
@@ -537,7 +568,7 @@ def build(profile: dict[str, Any], now: datetime | None = None) -> tuple[str, di
         "joined": years_ago_phrase(parse_iso(profile["createdAt"]), now),
         "days": len(profile.get("calendar") or []),
     }
-    return render_svg(profile, now), meta
+    return render_svg(profile, now, theme=theme), meta
 
 
 def self_test() -> None:
@@ -568,24 +599,34 @@ def self_test() -> None:
 
     fixture_path = SCRIPT_DIR / "testdata" / "mock_profile.json"
     profile = load_mock(fixture_path)
-    svg, meta = build(profile, now=now)
+    light, meta = build(profile, now=now, theme="light")
+    dark, meta_d = build(profile, now=now, theme="dark")
+    assert meta == meta_d
     assert meta["repos"] == 30
     assert meta["commits"] == 2155
     assert meta["restricted"] == 0
     assert "2 years ago" in meta["joined"]
-    assert "Adam Jašúrek" in svg
-    assert "2,155" in svg
-    assert "2 years ago" in svg
-    assert ">30<" in svg or ">30</text>" in svg
-    assert YELLOW in svg and LIME in svg and PINK in svg
-    assert GRAPH_BG in svg
-    assert LEVEL_COLORS[0] == "#161b22"
-    assert LEVEL_COLORS[4] == "#39d353"
-    assert all(c in svg for c in LEVEL_COLORS.values())
-    assert GRAPH_LABEL in svg
-    for banned in ("rajwood", "arealmorkov", "dlabanec", "foodtrucky", "plzenskydvur"):
-        assert banned.lower() not in svg.lower()
-    assert "<script" not in svg
+    for svg in (light, dark):
+        assert "Adam Jašúrek" in svg
+        assert "2,155" in svg
+        assert "2 years ago" in svg
+        assert ">30<" in svg or ">30</text>" in svg
+        assert YELLOW in svg and LIME in svg and PINK in svg
+        assert "<script" not in svg
+        for banned in ("rajwood", "arealmorkov", "dlabanec", "foodtrucky", "plzenskydvur"):
+            assert banned.lower() not in svg.lower()
+    # Light card + official GitHub light greens
+    assert THEMES["light"]["card_fill"] in light
+    assert all(c in light for c in THEMES["light"]["levels"].values())
+    assert THEMES["light"]["levels"][0] == "#ebedf0"
+    assert THEMES["light"]["levels"][4] == "#216e39"
+    assert THEMES["dark"]["levels"][4] not in light  # #39d353 dark-bright green
+    # Dark card + official GitHub dark greens
+    assert THEMES["dark"]["card_fill"] in dark
+    assert all(c in dark for c in THEMES["dark"]["levels"].values())
+    assert THEMES["dark"]["levels"][0] == "#161b22"
+    assert THEMES["dark"]["levels"][4] == "#39d353"
+    assert THEMES["light"]["levels"][0] not in dark  # #ebedf0
     days = normalize_calendar(profile["calendar"])
     assert len(days) % 7 == 0
     assert date.fromisoformat(days[0]["date"]).weekday() == 6
@@ -626,16 +667,23 @@ def main(argv: list[str] | None = None) -> int:
     if args.dump_json:
         Path(args.dump_json).write_text(json.dumps(profile, indent=2), encoding="utf-8")
 
-    svg, meta = build(profile, now=now)
+    svg_light, meta = build(profile, now=now, theme="light")
+    svg_dark, _ = build(profile, now=now, theme="dark")
     if meta["restricted"]:
         print(
             f"warning: {meta['restricted']} restricted (hidden private) contributions "
             f"were reported and are NOT included in the commit total of {meta['commits']}",
             file=sys.stderr,
         )
-    out = Path(args.output)
-    out.write_text(svg, encoding="utf-8")
-    print(f"wrote {out} ({out.stat().st_size} bytes)", file=sys.stderr)
+    out_light = Path(args.output)
+    if out_light.suffix:
+        out_dark = out_light.with_name(out_light.stem + "-dark" + out_light.suffix)
+    else:
+        out_dark = Path(str(out_light) + "-dark")
+    out_light.write_text(svg_light, encoding="utf-8")
+    out_dark.write_text(svg_dark, encoding="utf-8")
+    print(f"wrote {out_light} ({out_light.stat().st_size} bytes)", file=sys.stderr)
+    print(f"wrote {out_dark} ({out_dark.stat().st_size} bytes)", file=sys.stderr)
     print(json.dumps(meta, default=str), file=sys.stderr)
     return 0
 

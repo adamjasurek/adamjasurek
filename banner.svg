@@ -10,6 +10,21 @@
     .shadow-nudge {
       animation: shadow-nudge 3.6s ease-in-out infinite;
     }
+    @keyframes sq-bob-a {
+      from { transform: translate(0, 0) rotate(0deg); }
+      to { transform: translate(3px, -5px) rotate(8deg); }
+    }
+    @keyframes sq-bob-b {
+      from { transform: translate(0, 0) rotate(0deg); }
+      to { transform: translate(-3px, -4px) rotate(-7deg); }
+    }
+    .sq-yellow {
+      animation: sq-bob-a 2.8s ease-in-out infinite alternate;
+    }
+    .sq-lime {
+      animation: sq-bob-b 3.2s ease-in-out infinite alternate;
+      animation-delay: -1.1s;
+    }
   </style>
 
   <!-- Drop shadow of the main card -->
@@ -101,7 +116,15 @@
 <path fill="#111111" d="M798.93 220.35Q796.83 220.35 795.46 219.42Q794.10 218.50 793.81 216.71L796.14 216.12Q796.30 216.96 796.69 217.44Q797.09 217.92 797.67 218.13Q798.25 218.33 798.93 218.33Q799.96 218.33 800.48 217.96Q801.00 217.58 801.00 217.00Q801.00 216.41 800.51 216.12Q800.01 215.83 798.99 215.64L798.31 215.52Q797.19 215.31 796.26 214.93Q795.34 214.55 794.79 213.88Q794.23 213.21 794.23 212.16Q794.23 210.57 795.40 209.71Q796.57 208.86 798.49 208.86Q800.31 208.86 801.50 209.67Q802.70 210.49 803.06 211.85L800.72 212.55Q800.53 211.64 799.94 211.26Q799.35 210.87 798.49 210.87Q797.62 210.87 797.15 211.18Q796.68 211.49 796.68 212.05Q796.68 212.64 797.15 212.92Q797.63 213.20 798.45 213.34L799.14 213.46Q800.34 213.67 801.32 214.03Q802.30 214.39 802.88 215.05Q803.45 215.71 803.45 216.84Q803.45 218.52 802.22 219.43Q801.00 220.35 798.93 220.35Z"/>
   </g>
 
-  <!-- Small decorative marks -->
-  <rect x="1118" y="214" width="22" height="22" fill="#FFD60A" stroke="#111111" stroke-width="3"/>
-  <rect x="1088" y="226" width="18" height="18" fill="#C6FF4D" stroke="#111111" stroke-width="3"/>
+  <!-- Small decorative marks (bob/float; static position is the rest pose) -->
+  <g transform="translate(1097, 235)">
+    <g class="sq-lime">
+      <rect x="-9" y="-9" width="18" height="18" fill="#C6FF4D" stroke="#111111" stroke-width="3"/>
+    </g>
+  </g>
+  <g transform="translate(1129, 225)">
+    <g class="sq-yellow">
+      <rect x="-11" y="-11" width="22" height="22" fill="#FFD60A" stroke="#111111" stroke-width="3"/>
+    </g>
+  </g>
 </svg>

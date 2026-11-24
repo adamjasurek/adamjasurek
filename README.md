@@ -21,21 +21,23 @@ Freelance web developer (OSVČ since 2025) from Czechia. I recently finished sec
   <img src="https://img.shields.io/badge/Framer%20Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion">
 </div>
 
-## GitHub stats
+## GitHub activity
 
 <div align="center">
-  <img src="./github-metrics.svg" alt="GitHub stats for adamjasurek, including private repositories" width="49%">
-  <img src="./metrics-languages.svg" alt="Most used languages, including private repositories" width="49%">
+  <img src="./profile-card.svg" alt="Adam Jašúrek on GitHub — years active, repos, commits, and a contribution graph" width="100%">
 </div>
 
 ## Projects
 
-- **[Rajwood](https://www.rajwood.com/)** — one-page site for custom pergolas and timber structures. (soon)
-- **[Jídelna Dlabanec](https://www.jidelnadlabanec.cz)** — lunch delivery site, including an area for orders and payment matching.
-- **[Food-trailer configurator](https://foodtrucky.vercel.app)** — interactive 3D configurator for custom food trailers, built with Next.js and React Three Fiber. (soon)
+- **[Rajwood](https://github.com/adamjasurek/rajwood)** — one-page site for custom pergolas and timber structures. [Live demo](https://rajwood.vercel.app)
+- **[Areál Mořkov](https://github.com/adamjasurek/arealmorkov)** — site for a recreational area with a swimming pool, camp and restaurant. [Live demo](https://arealmorkov.vercel.app)
+- **[Jídelna Dlabanec](https://www.jidelnadlabanec.cz)** — lunch delivery and canteen site, including an admin area for orders and payment matching.
+- **[Food-trailer configurator](https://foodtrucky.vercel.app)** — interactive 3D configurator for custom food trailers, built with Next.js and React Three Fiber.
+
+More work: [adamjasurek.cz](https://www.adamjasurek.cz)
 
 ## Contact
 
 - Email: [adamjasurekk@gmail.com](mailto:adamjasurekk@gmail.com)
 - Website: [adamjasurek.cz](https://www.adamjasurek.cz)
-- LinkedIn: [linkedin.com/in/adamjasurek/](https://www.linkedin.com/in/adamjasurek/)
+- GitHub: [github.com/adamjasurek](https://github.com/adamjasurek)

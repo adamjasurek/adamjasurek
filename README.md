@@ -1,8 +1,32 @@
-# Adam Jašúrek
+<div align="center">
+  <img src="./banner.svg" alt="Adam Jašúrek — Freelance web developer from Czechia" width="100%">
+</div>
+
+<br>
+
+<div align="center">
 
 Freelance web developer (OSVČ since 2025) from Czechia. I recently finished secondary school in IT (SŠINFOTECH) and I build client websites and web apps — from marketing sites to order systems and 3D configurators.
 
-**Stack:** React, Next.js, TypeScript, Tailwind CSS, shadcn/ui, GSAP, Framer Motion, Three.js / React Three Fiber, Node.js, Python, n8n, Vercel.
+</div>
+
+## Tech stack
+
+<div align="center">
+  <img src="https://skillicons.dev/icons?i=react,nextjs,ts,tailwind,threejs,nodejs,python,vercel" alt="React, Next.js, TypeScript, Tailwind CSS, Three.js, Node.js, Python, and Vercel">
+  <br><br>
+  <img src="https://img.shields.io/badge/n8n-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n">
+  <img src="https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=black" alt="GSAP">
+  <img src="https://img.shields.io/badge/shadcn%2Fui-000000?style=for-the-badge&logo=shadcnui&logoColor=white" alt="shadcn/ui">
+  <img src="https://img.shields.io/badge/Framer%20Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion">
+</div>
+
+## GitHub stats
+
+<div align="center">
+  <img src="./github-metrics.svg" alt="GitHub stats for adamjasurek, including private repositories" width="49%">
+  <img src="./metrics-languages.svg" alt="Most used languages, including private repositories" width="49%">
+</div>
 
 ## Projects
 

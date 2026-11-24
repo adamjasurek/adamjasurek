@@ -66,10 +66,10 @@ THEMES = {
     "light": {
         "card_fill": "#FFF8EB",
         "card_stroke": "#111111",
-        "card_shadow": "#111111",
+        "card_shadow": "#d0d7de",
         "panel_fill": "#ffffff",
         "panel_stroke": "#111111",
-        "panel_shadow": "#111111",
+        "panel_shadow": "#d0d7de",
         "graph_label": "#57606a",
         "levels": {
             0: "#ebedf0",
@@ -82,10 +82,10 @@ THEMES = {
     "dark": {
         "card_fill": "#0d1117",
         "card_stroke": "#e6edf3",
-        "card_shadow": "#c9d1d9",
+        "card_shadow": "#000000",
         "panel_fill": "#0d1117",
         "panel_stroke": "#30363d",
-        "panel_shadow": "#010409",
+        "panel_shadow": "#000000",
         "graph_label": "#7d8590",
         "levels": {
             0: "#161b22",
@@ -451,7 +451,7 @@ def render_svg(profile: dict[str, Any], now: datetime, theme: str = "light") -> 
     )
     parts.append(
         f'  <rect x="{plate_x + 6}" y="{plate_y + 6}" width="{plate_w}" '
-        f'height="{plate_h}" fill="{INK}"/>'
+        f'height="{plate_h}" fill="{pal["card_shadow"]}"/>'
     )
     parts.append(
         f'  <rect x="{plate_x}" y="{plate_y}" width="{plate_w}" height="{plate_h}" '
@@ -465,7 +465,7 @@ def render_svg(profile: dict[str, Any], now: datetime, theme: str = "light") -> 
         tx = tiles_x + i * (tile_w + tile_gap)
         parts.append(
             f'  <rect x="{tx + 5:.2f}" y="{tile_y + 5}" width="{tile_w:.2f}" '
-            f'height="{tile_h}" fill="{INK}"/>'
+            f'height="{tile_h}" fill="{pal["card_shadow"]}"/>'
         )
         parts.append(
             f'  <rect x="{tx:.2f}" y="{tile_y}" width="{tile_w:.2f}" height="{tile_h}" '
@@ -627,6 +627,18 @@ def self_test() -> None:
     assert THEMES["dark"]["levels"][0] == "#161b22"
     assert THEMES["dark"]["levels"][4] == "#39d353"
     assert THEMES["light"]["levels"][0] not in dark  # #ebedf0
+    # Shadows follow the theme: light grey on light, near-black on dark
+    assert THEMES["light"]["card_shadow"] == "#d0d7de"
+    assert THEMES["light"]["panel_shadow"] == "#d0d7de"
+    assert THEMES["dark"]["card_shadow"] == "#000000"
+    assert THEMES["dark"]["panel_shadow"] == "#000000"
+    assert THEMES["light"]["card_shadow"] in light
+    assert THEMES["dark"]["card_shadow"] in dark
+    assert THEMES["dark"]["card_shadow"] not in light
+    assert "#c9d1d9" not in dark  # previous inverted (light) shadow
+    # Count theme shadows: outer card + name plate + 3 tiles + graph panel
+    assert light.count(THEMES["light"]["card_shadow"]) >= 6
+    assert dark.count('fill="#000000"') >= 6
     days = normalize_calendar(profile["calendar"])
     assert len(days) % 7 == 0
     assert date.fromisoformat(days[0]["date"]).weekday() == 6

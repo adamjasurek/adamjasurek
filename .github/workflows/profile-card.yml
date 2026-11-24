@@ -11,7 +11,7 @@
 # private work.
 #
 # permissions: contents: write lets the default GITHUB_TOKEN commit
-# profile-card.svg back to this repository.
+# profile-card.svg and profile-card-dark.svg back to this repository.
 #
 # After publishing, delete leftover github-metrics.svg and
 # metrics-languages.svg from the repo if they are still present.
@@ -41,9 +41,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add profile-card.svg
+          git add profile-card.svg profile-card-dark.svg
           if git diff --staged --quiet; then
-            echo "No changes to profile-card.svg"
+            echo "No changes to profile cards"
           else
             git commit -m "[skip ci] Update profile card"
             git push
